@@ -14,7 +14,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     // Optional: Check auth on app load and redirect if needed
-    if (!this.auth.isLoggedIn()) {
+    if (!this.auth.isAuthenticated()) {
       // Don't redirect; allow guest access to home/search
     }
   }

@@ -5,14 +5,17 @@
       <li><a routerLink="/" routerLinkActive="text-orange-500" [routerLinkActiveOptions]="{exact:true}" class="hover:text-orange-500">Home</a></li>
       <li><a routerLink="/about-us" routerLinkActive="text-orange-500" class="hover:text-orange-500">About Us</a></li>
       <li><a routerLink="/contact-us" routerLinkActive="text-orange-500" class="hover:text-orange-500">Contact Us</a></li>
-      <ng-container *ngIf="!auth.isLoggedIn()">
+      <ng-container *ngIf="!authService.isAuthenticated()">
         <li><a routerLink="/login" routerLinkActive="text-orange-500" class="hover:text-orange-500">Login</a></li>
         <li><a routerLink="/register" routerLinkActive="text-orange-500" class="hover:text-orange-500">Register</a></li>
       </ng-container>
-      <ng-container *ngIf="auth.isLoggedIn()">
+      <ng-container *ngIf="authService.isAuthenticated()">
         <li class="flex items-center space-x-2">
-          <span>Welcome, {{ auth.getUserName() }}</span>  <!-- Fixed: No space in method name -->
-          <button (click)="logout()" class="text-red-500 hover:text-red-700 font-semibold">Logout</button>
+          <span>Welcome, {{ authService.getUserName() }}</span>  <!-- FIXED: Space removed in method name; use authService -->
+          <!-- Profile Icon Button (Triggers Dropdown) -->
+          <button mat-icon-button [matMenuTriggerFor]="profileMenu" aria-label="User  menu" class="profile-icon-btn">  <!-- FIXED: Typo in aria-label; reference now in scope -->
+            <mat-icon>account_circle</mat-icon>
+          </button>
         </li>
       </ng-container>
     </ul>
@@ -21,4 +24,35 @@
       <!-- Implement mobile menu toggle if needed -->
     </div>
   </div>
+
+  <!-- FIXED: MatMenu Moved Outside ngIf (Always in Scope; Kept All Items Intact) -->
+  <mat-menu #profileMenu="matMenu" class="profile-dropdown">  <!-- Now static: Reference always exists -->
+    <ng-container *ngIf="authService.isAuthenticated()">  <!-- Conditional content only -->
+      <div class="menu-header">
+        <!-- <mat-icon style="align-items: center;">account_circle</mat-icon> -->
+        <div class="user-info">
+          <h3 style="text-align: center;">{{ authService.user.name }}</h3>  <!-- Assumes authService.user; adjust if needed -->
+          <p style="text-align: center;">{{ authService.user.email }}</p>
+        </div>
+      </div>
+      <!-- <mat-divider></mat-divider> -->
+      <button mat-menu-item (click)="openProfile()">
+        <mat-icon>person</mat-icon>
+        <span>Profile</span>
+      </button>
+      <button mat-menu-item (click)="openNotifications()">
+        <mat-icon>notifications</mat-icon>
+        <span>Notifications</span>
+      </button>
+      <button mat-menu-item (click)="goToHistory()">
+        <mat-icon>history</mat-icon>
+        <span>Booking History</span>
+      </button>
+      <!-- <mat-divider></mat-divider> -->
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Logout</span>
+      </button>
+    </ng-container>
+  </mat-menu>
 </nav>

@@ -1,8 +1,109 @@
-:host {
-  display: block;
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: var(--shadow-elevated);
+  background: var(--gradient-primary) !important;  // Blue gradient
+  color: var(--white);
+
+  .navbar-title {
+    font-size: 1.5em;
+    font-weight: var(--font-weight-bold);
+    margin-left: 10px;
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+
+  // Profile Dropdown (Card-like styling)
+  .profile-dropdown {
+    width: 280px;  // Fixed width for card feel
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-elevated);
+    overflow: hidden;
+
+    .menu-header {
+      display: flex;
+      align-items: center;
+      padding: 16px;
+      background: var(--neutral-light);
+      gap: 12px;
+
+      mat-icon { color: var(--primary-blue); font-size: 32px; }
+      h3 { margin: 0; color: var(--neutral-dark); }
+      p { margin: 0; color: #666; font-size: 0.9em; }
+    }
+
+    mat-menu-item {
+      transition: var(--transition-smooth);
+      &:hover { background: rgba(13, 71, 161, 0.1); }  // Subtle blue hover
+
+      mat-icon { color: var(--primary-blue); margin-right: 12px; }
+    }
+
+    // Responsive: On mobile, wider
+    @media (max-width: 768px) {
+      width: 100vw;
+      max-width: 300px;
+      right: 0 !important;
+      left: auto !important;
+    }
+  }
+
+  // Icon hover
+  button[mat-icon-button]:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+  }
+
+  .white { color: var(--white) !important; }
+}
+.profile-icon-btn {
+  // Tailwind-compatible: Small icon button
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  color: #9ca3af !important;  // Gray-400 to match text-gray-700
+  transition: color 0.2s ease;
+
+  &:hover {
+    background: #fee2e2 !important;  // Light red hover (matches Tailwind)
+    color: #dc2626 !important;  // Red-600
+  }
 }
 
-// Optional custom styles
-nav ul li a.router-link-active {
-  border-bottom: 2px solid #f97316;  // Orange underline for active
+.profile-dropdown {
+  // Enhance card-like feel (matches your Tailwind shadow-md)
+  border-radius: 0.5rem !important;  // Tailwind rounded-lg
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;  // Tailwind shadow-md
+  min-width: 300px !important;
+
+  .menu-header {
+    padding: 1rem !important;  // Tailwind p-4
+    background: #f9fafb !important;  // Tailwind bg-gray-50
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;  // Tailwind gap-3
+    text-align: center;
+
+    mat-icon {
+      font-size: 2rem !important;  // Larger icon
+      color: #0d47a1 !important;  // Your primary blue
+    }
+
+    h3 { margin: 0 !important; color: #374151 !important; font-weight: 600; }  // Tailwind text-gray-700 font-semibold
+    p { margin: 0 !important; color: #6b7280 !important; font-size: 0.875rem; }  // Tailwind text-gray-500 text-sm
+  }
+
+  mat-menu-item {
+    &:hover { background: #fef2f2 !important; }  // Light red hover
+  }
+}
+
+// Ensure mat-icon in menu matches
+.profile-dropdown mat-icon {
+  color: #0d47a1 !important;  // Primary blue
+  margin-right: 0.75rem !important;
 }

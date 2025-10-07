@@ -1,0 +1,13 @@
+<div class="p-6 max-w-lg mx-auto">
+  <h2 class="text-2xl font-bold mb-4">Booking Confirmation</h2>
+
+  <button (click)="confirm()" class="bg-green-500 text-white px-4 py-2 rounded mb-4">Confirm</button>
+
+  <div *ngIf="bookingId">
+    <p class="text-lg">Booking successful! Your booking ID is <span class="font-semibold">{{ bookingId }}</span></p>
+    <p>{{ message }}</p>
+  </div>
+  <div *ngIf="message && !bookingId">
+    <p class="text-red-600">{{ message }}</p>
+  </div>
+</div>

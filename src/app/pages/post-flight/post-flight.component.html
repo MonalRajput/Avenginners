@@ -1,0 +1,36 @@
+<div class="max-w-4xl mx-auto px-4 py-12">
+  <h1 class="text-3xl font-bold mb-8 text-center">Post-Flight Transport</h1>
+  <p class="text-center text-gray-600 mb-8">Select drop-off from airport to your destination.</p>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="flex justify-center py-8">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+
+  <!-- Form -->
+  <form [formGroup]="form" class="bg-white rounded-xl shadow-md p-6 space-y-6" (ngSubmit)="onContinue()">
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Drop-off Address</mat-label>
+      <input matInput formControlName="dropAddress" placeholder="e.g., Bandra, Mumbai" (input)="onAddressChange()">
+      <mat-error *ngIf="form.get('dropAddress')?.invalid">Address is required</mat-error>
+    </mat-form-field>
+
+    <div *ngIf="modes.length > 0" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <mat-radio-group formControlName="dropMode" class="space-y-2">
+        <mat-radio-button *ngFor="let mode of modes" [value]="mode.name">
+          <div class="flex items-center space-x-3">
+            <span>{{ mode.name }}</span>
+            <span class="text-green-600 font-semibold">₹{{ mode.price }}</span>
+            <span class="text-sm text-gray-500">{{ mode.estimatedTime }}</span>
+          </div>
+        </mat-radio-button>
+      </mat-radio-group>
+      <mat-error *ngIf="form.get('dropMode')?.invalid">Select a transport mode</mat-error>
+    </div>
+
+    <button mat-raised-button color="primary" type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 font-semibold"
+            [disabled]="form.invalid || isLoading">
+      Continue to Add-ons
+    </button>
+  </form>
+</div>

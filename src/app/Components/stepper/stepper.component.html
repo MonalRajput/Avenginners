@@ -1,0 +1,288 @@
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+  <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden">
+    <!-- Error Banner -->
+    <div *ngIf="errorMessage" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4">
+      {{ errorMessage }}
+      <button (click)="errorMessage = null" class="float-right text-red-500">×</button>
+    </div>
+
+    <!-- Stepper -->
+    <mat-horizontal-stepper #stepper linear class="p-0">
+      <mat-horizontal-stepper #stepper>
+  <mat-step label="Step 1">Step 1 Content</mat-step>
+  <mat-step label="Step 2">Step 2 Content</mat-step>
+</mat-horizontal-stepper>
+
+      
+      <!-- Step 1: Search Flights
+      <mat-step [completed]="availableFlights.length > 0">
+        <ng-template matStepLabel>
+          <div class="flex items-center">
+            <span class="bg-indigo-500 text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">1</span>
+            <span>Search Flights</span>
+          </div>
+        </ng-template>
+        <div class="p-6">
+          <h2 class="text-2xl font-semibold text-indigo-600 mb-4">Where are you flying?</h2>
+          <form [formGroup]="searchForm" (ngSubmit)="onSearchFlights()">
+            <div class="grid md:grid-cols-2 gap-4 mb-4">
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Source Airport</mat-label>
+                <mat-select formControlName="source">
+                  <mat-option value="DEL">DEL - Delhi</mat-option>
+                  <mat-option value="BOM">BOM - Mumbai</mat-option>
+                  <mat-option value="BLR">BLR - Bengaluru</mat-option>
+                  <mat-option value="HYD">HYD - Hyderabad</mat-option>
+                  <mat-option value="MAA">MAA - Chennai</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Destination Airport</mat-label>
+                <mat-select formControlName="destination">
+                  <mat-option value="DEL">DEL - Delhi</mat-option>
+                  <mat-option value="BOM">BOM - Mumbai</mat-option>
+                  <mat-option value="BLR">BLR - Bengaluru</mat-option>
+                  <mat-option value="HYD">HYD - Hyderabad</mat-option>
+                  <mat-option value="MAA">MAA - Chennai</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <button mat-raised-button color="primary" type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-all" [disabled]="isLoading || searchForm.invalid">
+              {{ isLoading ? 'Searching...' : 'Search Flights' }}
+            </button>
+          </form>
+        </div>
+      </mat-step> -->
+ <mat-step [completed]="availableFlights.length > 0">
+              <ng-template matStepLabel>Flight Search</ng-template>
+        <form [formGroup]="searchForm" (ngSubmit)="onSearchFlights()">
+          <mat-form-field appearance="outline">
+            <mat-label>Source</mat-label>
+            <input matInput formControlName="source" placeholder="e.g., Delhi">
+            <mat-error *ngIf="searchForm.get('source')?.invalid">Source is required</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Destination</mat-label>
+            <input matInput formControlName="destination" placeholder="e.g., Mumbai">
+            <mat-error *ngIf="searchForm.get('destination')?.invalid">Destination is required</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Travel Date</mat-label>
+            <input 
+              type="date" 
+              matInput 
+              formControlName="travelDate" 
+            
+              placeholder="Select date (MM/DD/YYYY)">
+            <mat-error *ngIf="searchForm.get('travelDate')?.invalid">Date is required</mat-error>
+          </mat-form-field>
+          <button mat-raised-button color="primary" type="submit" [disabled]="searchForm.invalid || isLoading">
+            Search Flights
+          </button>
+        </form>
+
+
+              <!-- Flights List (after search) -->
+        <div *ngIf="availableFlights.length > 0" class="flights-list">
+          <h3>Available Flights</h3>
+          <mat-card *ngFor="let flight of availableFlights" class="flight-card" (click)="selectFlight(flight)">
+            <mat-card-header>
+              <mat-card-title>{{ flight.airline }} - {{ flight.flightNumber }}</mat-card-title>
+              <mat-card-subtitle>{{ flight.fromAirport }} → {{ flight.toAirport }} | {{ flight.duration }}</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <p>Departure: {{ flight.departureTime }} | Arrival: {{ flight.arrivalTime }}</p>
+              <p>Seats: {{ flight.seatsAvailable }} | Price: ₹{{ flight.price }}</p>
+              <p>Date: {{ flight.date }}</p>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-button>Select</button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+        <div matStepperNext></div>
+      </mat-step>
+
+
+      <!-- Step 2: Select Flight -->
+      <!-- <mat-step [completed]="!!selectedFlight">
+        <ng-template matStepLabel>
+          <div class="flex items-center">
+            <span class="bg-indigo-500 text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">2</span>
+            <span>Select Flight</span>
+          </div>
+        </ng-template>
+        <div class="p-6">
+          <h2 class="text-2xl font-semibold text-indigo-600 mb-4">Choose Your IndiFly Flight</h2>
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4" *ngIf="!isLoading">
+            <div *ngFor="let flight of availableFlights" 
+                 class="border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer bg-white"
+                 (click)="selectFlight(flight)">
+              <div class="flex justify-between items-start mb-2">
+                <h3 class="font-bold text-lg">{{ flight.fromAirport }} → {{ flight.toAirport }}</h3>
+                <span class="text-green-600 font-bold text-xl">₹{{ flight.price }}</span>
+              </div>
+              <p class="text-gray-600">Dep: {{ flight.departureTime }} | Arr: {{ flight.arrivalTime }}</p>
+              <p class="text-sm text-gray-500">{{ flight.duration }} | IndiFly</p>
+              <div *ngIf="selectedFlight?.id === flight.id" class="mt-2 p-2 bg-green-100 rounded text-green-800">Selected</div>
+            </div>
+          </div>
+          <div *ngIf="isLoading" class="flex justify-center p-8">
+            <mat-spinner diameter="50"></mat-spinner>
+          </div>
+          <button mat-button (click)="stepper.previous()" class="mt-4 mr-2">Back</button>
+        </div>
+      </mat-step> -->
+
+      <!-- Step 3: Pickup Transport -->
+      <mat-step [completed]="bookingData.pickupAddress">
+        <ng-template matStepLabel>
+          <div class="flex items-center">
+            <!-- <span class="bg-indigo-500 text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">3</span> -->
+            <span>Pre-Flight Transport</span>
+          </div>
+        </ng-template>
+        <div class="p-6">
+          <h2 class="text-2xl font-semibold text-indigo-600 mb-4">Pickup from Residential Area</h2>
+          <mat-form-field appearance="outline" class="w-full mb-4">
+            <mat-label>Pickup Location (City)</mat-label>
+            <mat-select (selectionChange)="onPickupLocationSelected($event.value)">
+              <mat-option *ngFor="let loc of mockLocations" [value]="loc">{{ loc.name }}</mat-option> <!-- Use service.getLocations() in real -->
+            </mat-select>
+          </mat-form-field>
+          <div *ngIf="pickupTransports.length > 0" class="grid md:grid-cols-3 gap-4">
+            <mat-radio-group (change)="selectPickupTransport($event.value)" class="w-full">
+              <mat-radio-button *ngFor="let mode of pickupTransports" [value]="mode.id" class="block w-full mb-2 p-2 border rounded hover:bg-gray-50">
+                <div class="flex justify-between">
+                  <span>{{ mode.name }}</span>
+                  <span class="text-green-600">₹{{ mode.price }} | {{ mode.estimatedTime }}</span>
+                </div>
+              </mat-radio-button>
+            </mat-radio-group>
+          </div>
+          <div *ngIf="isLoading" class="flex justify-center p-8">
+            <mat-spinner diameter="50"></mat-spinner>
+          </div>
+          <button mat-button (click)="stepper.previous()" class="mt-4 mr-2">Back</button>
+          <button mat-raised-button color="primary" (click)="stepper.next()" class="bg-indigo-600 text-white px-6 py-2 rounded-lg">Continue</button>
+        </div>
+      </mat-step>
+
+      <!-- Step 4: Drop Transport -->
+      <mat-step [completed]="bookingData.dropAddress">
+        <ng-template matStepLabel>
+          <div class="flex items-center">
+            <!-- <span class="bg-indigo-500 text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">4</span> -->
+            <span>Post-Flight Transport</span>
+          </div>
+        </ng-template>
+        <div class="p-6">
+          <h2 class="text-2xl font-semibold text-indigo-600 mb-4">Drop to Residential Area</h2>
+          <mat-form-field appearance="outline" class="w-full mb-4">
+            <mat-label>Drop Location (City)</mat-label>
+            <mat-select (selectionChange)="onDropLocationSelected($event.value)">
+              <mat-option *ngFor="let loc of mockLocations" [value]="loc">{{ loc.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div *ngIf="dropTransports.length > 0" class="grid md:grid-cols-3 gap-4">
+            <mat-radio-group (change)="selectDropTransport($event.value)" class="w-full">
+              <mat-radio-button *ngFor="let mode of dropTransports" [value]="mode.id" class="block w-full mb-2 p-2 border rounded hover:bg-gray-50">
+                <div class="flex justify-between">
+                  <span>{{ mode.name }}</span>
+                  <span class="text-green-600">₹{{ mode.price }} | {{ mode.estimatedTime }}</span>
+                </div>
+              </mat-radio-button>
+            </mat-radio-group>
+          </div>
+          <div *ngIf="isLoading" class="flex justify-center p-8">
+            <mat-spinner diameter="50"></mat-spinner>
+          </div>
+          <button mat-button (click)="stepper.previous()" class="mt-4 mr-2">Back</button>
+          <button mat-raised-button color="primary" (click)="stepper.next()" class="bg-indigo-600 text-white px-6 py-2 rounded-lg">Continue</button>
+        </div>
+      </mat-step>
+
+      <!-- Step 5: Ancillaries -->
+      <mat-step [completed]="true"> <!-- Always completable -->
+        <ng-template matStepLabel>
+          <div class="flex items-center">
+            <!-- <span class="bg-indigo-500 text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">5</span> -->
+            <span>Add Ancillaries (Optional)</span>
+          </div>
+        </ng-template>
+        <div class="p-6">
+          <h2 class="text-2xl font-semibold text-indigo-600 mb-4">Enhance Your Journey</h2>
+          <div class="space-y-4">
+            <mat-checkbox *ngFor="let anc of ancillaries" 
+                          (change)="toggleAncillary(anc, $event)"
+                          class="w-full p-3 border rounded hover:bg-gray-50">
+              <div class="flex justify-between">
+                <span>{{ anc.name }} - {{ anc.description }}</span>
+                <span class="text-green-600">₹{{ anc.price }}</span>
+              </div>
+            </mat-checkbox>
+          </div>
+          <div class="mt-4 p-3 bg-gray-100 rounded text-right font-bold">
+            Subtotal: ₹{{ totalPrice }}
+          </div>
+          <button mat-button (click)="stepper.previous()" class="mt-4 mr-2">Back</button>
+          <button mat-raised-button color="primary" (click)="stepper.next()" class="bg-indigo-600 text-white px-6 py-2 rounded-lg">Continue</button>
+        </div>
+      </mat-step>
+
+      <!-- Step 6: Confirmation -->
+     <!-- Step 6: Review & Confirm (NEW: This was missing!) -->
+  <mat-step>
+    <ng-template matStepLabel>
+      <!-- <mat-icon>assignment</mat-icon>  -->
+       Review & Confirm
+    </ng-template>
+    <div class="step-content">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Review Your Booking</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div *ngIf="!selectedFlight" class="error-message">
+            <mat-icon>error</mat-icon> Please select a flight to review.
+          </div>
+          <div *ngIf="selectedFlight" class="review-summary">
+            <!-- Flight Summary -->
+            <div class="summary-section">
+              <h3>Flight</h3>
+              <p>{{ selectedFlight.airline }} - {{ selectedFlight.flightNumber }}</p>
+              <p>{{ selectedFlight.fromAirport }} → {{ selectedFlight.toAirport }} on {{ selectedFlight.date }}</p>
+              <p>₹{{ selectedFlight.price }}</p>
+            </div>
+             <!-- Transports Summary -->
+            <div class="summary-section">
+              <h3>Pickup & Drop</h3>
+              <p>Pickup: {{ bookingData.pickupAddress || 'N/A' }} via {{ bookingData.pickupMode || 'N/A' }} (₹{{ bookingData.pickupPrice || 0 }})</p>
+              <p>Drop: {{ bookingData.dropAddress || 'N/A' }} via {{ bookingData.dropMode || 'N/A' }} (₹{{ bookingData.dropPrice || 0 }})</p>
+            </div>
+            <!-- Ancillaries Summary -->
+            <div class="summary-section">
+              <h3>Extras</h3>
+              <p>Seat: {{ bookingData.seatType || 'Economy' }} (₹{{ bookingData.seatPrice || 0 }})</p>
+              <p>Ancillaries: {{ (bookingData.ancillaries || []).join(', ') || 'None' }} (₹{{ bookingData.ancillaryPrice || 0 }})</p>
+            </div>
+            <!-- Total -->
+            <div class="total-section">
+              <h2>Total: ₹{{ totalPrice }}</h2>
+              <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+            </div>
+              <!-- Confirm Button (NEW: Binds to confirmBooking()) -->
+            <button mat-raised-button color="primary" (click)="confirmBooking()" >
+              <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+              {{ isLoading ? 'Confirming...' : 'Confirm Booking' }}
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </mat-step>
+<!-- Global Error/Loading (if needed outside steps) -->
+<!-- <div *ngIf="errorMessage && !isLoading" class="global-error">
+  <mat-icon>error</mat-icon> {{ errorMessage }}
+</div>
+<mat-spinner *ngIf="isLoading && stepper.selectedIndex === 0" class="global-loading"></mat-spinner> -->

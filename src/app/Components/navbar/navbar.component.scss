@@ -1,0 +1,8 @@
+:host {
+  display: block;
+}
+
+// Optional custom styles
+nav ul li a.router-link-active {
+  border-bottom: 2px solid #f97316;  // Orange underline for active
+}

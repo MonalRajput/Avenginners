@@ -1,0 +1,65 @@
+<div class="receipt-dialog">
+  <h2 mat-dialog-title>Booking Receipt</h2>
+  <mat-dialog-content class="receipt-content" [@slideIn]>
+    <div class="receipt-header">
+      <h3>Flight Booking Receipt</h3>
+      <p>Receipt ID: {{ data.booking.receipt || 'Receipt-' + data.booking.id }}</p>
+      <p>Date: {{ formattedBookingDate }}</p>
+    </div>
+
+    <div class="receipt-body">
+      <table class="receipt-table">
+        <tr>
+          <td><strong>Booking ID:</strong></td>
+          <td>{{ data.booking.id }}</td>
+        </tr>
+        <tr>
+          <td><strong>Passenger:</strong></td>
+          <td>Mock User (ID: {{ data.booking.userId }})</td>
+        </tr>
+        <tr>
+          <td><strong>Flight:</strong></td>
+          <td>{{ data.booking.flight?.airline }} {{ data.booking.flight?.flightNumber }}</td>
+        </tr>
+        <tr>
+          <td><strong>Route:</strong></td>
+          <td>{{ data.booking.flight?.fromAirport }} → {{ data.booking.flight?.toAirport }} on {{ data.booking.flight?.date }}</td>
+        </tr>
+        <tr>
+          <td><strong>Pickup:</strong></td>
+          <td>{{ data.booking.pickupAddress }} ({{ data.booking.pickupMode }})</td>
+        </tr>
+        <tr>
+          <td><strong>Drop:</strong></td>
+          <td>{{ data.booking.dropAddress }} ({{ data.booking.dropMode }})</td>
+        </tr>
+        <tr>
+          <td><strong>Ancillaries:</strong></td>
+          <td>{{ (data.booking.ancillaries || []).join(', ') || 'None' }}</td>
+        </tr>
+        <tr class="total-row">
+          <td><strong>Total Paid:</strong></td>
+          <td>₹{{ data.booking.totalPrice }}</td>
+        </tr>
+        <tr>
+          <td><strong>Payment Status:</strong></td>
+          <td>{{ data.booking.status.toUpperCase() }}</td>
+        </tr>
+        <tr>
+          <td><strong>Payment ID:</strong></td>
+          <td>{{ data.booking.paymentId }}</td>
+        </tr>
+      </table>
+
+      <div class="receipt-footer">
+        <p>Thank you for booking with us! For queries, contact support@airline.com.</p>
+        <small>This is a mock receipt. In production, generate PDF via backend.</small>
+      </div>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onClose()">Close</button>
+    <button mat-raised-button color="primary" (click)="onPrint()">Print Receipt</button>
+    <button mat-button color="accent" (click)="onNewBooking()">New Booking</button>
+  </mat-dialog-actions>
+</div>

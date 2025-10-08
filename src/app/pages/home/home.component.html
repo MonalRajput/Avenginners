@@ -1,60 +1,60 @@
 <!-- Hero Search Form (existing - ensure it has (ngSubmit)="onSearch()" on <form>) -->
-<section class="hero-gradient py-20 text-white">  <!-- Your hero styling -->
-  <div class="max-w-4xl mx-auto px-4 text-center">
-    <h1 class="text-5xl font-bold mb-6">Book Your Intermodal Journey</h1>
-    <p class="text-xl mb-8">Flights + Ground Transport in One Go</p>
-    <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="bg-white bg-opacity-20 rounded-xl p-6 max-w-2xl mx-auto space-y-4">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>From</mat-label>
-          <input matInput formControlName="from" placeholder="e.g., Delhi">
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>To</mat-label>
-          <input matInput formControlName="to" placeholder="e.g., Mumbai">
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Travel Date</mat-label>
-          <input matInput [matDatepicker]="picker" formControlName="date">
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-      </div>
-      <button mat-raised-button color="primary" type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 font-semibold"
-              [disabled]="searchForm.invalid || isLoading">
-        <span *ngIf="isLoading">Searching...</span>
-        <span *ngIf="!isLoading">Search Flights</span>
-      </button>
-    </form>
-  </div>
-</section>
-
-<!-- Loading Spinner -->
-<div *ngIf="isLoading" class="flex justify-center py-12">
-  <mat-spinner diameter="50"></mat-spinner>
-  <p class="ml-4 text-gray-600">Searching for flights...</p>
-</div>
-
-<!-- Error Message -->
-<div *ngIf="error && !isLoading" class="max-w-4xl mx-auto px-4 py-8 text-center">
-  <p class="text-red-500 text-lg font-semibold bg-red-50 p-4 rounded-lg">{{ error }}</p>
-  <button mat-button (click)="searchForm.reset(); error = null;" class="mt-4">Clear & Try Again</button>
-</div>
-
-<!-- Flights Results (Only shows if not navigating; uncomment selectFlight in TS to use) -->
-<section *ngIf="flights.length > 0 && !isLoading" class="max-w-6xl mx-auto px-4 py-12">
-  <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">Available Flights</h2>
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <div *ngFor="let flight of flights" 
-         class="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition-all cursor-pointer border-l-4 border-orange-500"
-         (click)="selectFlight(flight.id)">  <!-- Use selectFlight for manual selection -->
-      <div class="flex justify-between items-start mb-3">
-        <h3 class="font-bold text-xl">{{ flight.airline }} - {{ flight.flightNumber }}</h3>
-        <span class="text-2xl font-bold text-green-600">₹{{ flight.price }}</span>
-      </div>
-      <p class="text-gray-600 mb-2">🛫 {{ flight.fromAirport }} → {{ flight.toAirport }}</p>
-      <p class="text-sm text-gray-500">Dep: {{ flight.departureTime }} | Arr: {{ flight.arrivalTime }} | {{ flight.duration }}</p>
-      <p class="text-xs text-gray-400 mt-2">Seats: {{ flight.seatsAvailable }}</p>
+  <section class="py-20 text-white hero-gradient">  <!-- Your hero styling -->
+    <div class="max-w-4xl px-4 mx-auto text-center">
+      <h1 class="mb-6 text-5xl font-bold">Book Your Intermodal Journey</h1>
+      <p class="mb-8 text-xl">Flights + Ground Transport in One Go</p>
+      <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="max-w-2xl p-6 mx-auto space-y-4 bg-white bg-opacity-20 rounded-xl">
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>From</mat-label>
+            <input matInput formControlName="from" placeholder="e.g., Delhi">
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>To</mat-label>
+            <input matInput formControlName="to" placeholder="e.g., Mumbai">
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Travel Date</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="date">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <button mat-raised-button color="primary" type="submit" class="w-full py-3 font-semibold text-white bg-orange-500 hover:bg-orange-600"
+                [disabled]="searchForm.invalid || isLoading">
+          <span *ngIf="isLoading">Searching...</span>
+          <span *ngIf="!isLoading">Search Flights</span>
+        </button>
+      </form>
     </div>
+  </section>
+  
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="flex justify-center py-12">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p class="ml-4 text-gray-600">Searching for flights...</p>
   </div>
-</section>
+  
+  <!-- Error Message -->
+  <div *ngIf="error && !isLoading" class="max-w-4xl px-4 py-8 mx-auto text-center">
+    <p class="p-4 text-lg font-semibold text-red-500 rounded-lg bg-red-50">{{ error }}</p>
+    <button mat-button (click)="searchForm.reset(); error = null;" class="mt-4">Clear & Try Again</button>
+  </div>
+  
+  <!-- Flights Results (Only shows if not navigating; uncomment selectFlight in TS to use) -->
+  <section *ngIf="flights.length > 0 && !isLoading" class="max-w-6xl px-4 py-12 mx-auto">
+    <h2 class="mb-8 text-3xl font-bold text-center text-gray-800">Available Flights</h2>
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div *ngFor="let flight of flights" 
+           class="p-6 transition-all bg-white border-l-4 border-orange-500 shadow-md cursor-pointer rounded-xl hover:shadow-xl"
+           (click)="selectFlight(flight.id)">  <!-- Use selectFlight for manual selection -->
+        <div class="flex items-start justify-between mb-3">
+          <h3 class="text-xl font-bold">{{ flight.airline }} - {{ flight.flightNumber }}</h3>
+          <span class="text-2xl font-bold text-green-600">₹{{ flight.price }}</span>
+        </div>
+        <p class="mb-2 text-gray-600">🛫 {{ flight.fromAirport }} → {{ flight.toAirport }}</p>
+        <p class="text-sm text-gray-500">Dep: {{ flight.departureTime }} | Arr: {{ flight.arrivalTime }} | {{ flight.duration }}</p>
+        <p class="mt-2 text-xs text-gray-400">Seats: {{ flight.seatsAvailable }}</p>
+      </div>
+    </div>
+  </section>

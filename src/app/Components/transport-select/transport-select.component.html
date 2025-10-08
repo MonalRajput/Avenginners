@@ -1,21 +1,21 @@
-<div class="p-6 max-w-2xl mx-auto">
-  <h2 class="text-2xl font-bold mb-4">Select Transport Options</h2>
+<div class="max-w-2xl p-6 mx-auto">
+  <h2 class="mb-4 text-2xl font-bold">Select Transport Options</h2>
 
   <div class="mb-6">
-    <h3 class="font-semibold mb-2">Pickup (to origin airport)</h3>
-    <div *ngFor="let r of pickupRoutes" class="border p-3 rounded mb-2 hover:bg-gray-100 cursor-pointer"
+    <h3 class="mb-2 font-semibold">Pickup (to origin airport)</h3>
+    <div *ngFor="let r of pickupRoutes" class="p-3 mb-2 border rounded cursor-pointer hover:bg-gray-100"
          (click)="selectPickup(r)">
       <div>{{ r.mode.mode }} – ₹{{ r.estimatedCost }} | {{ r.estimatedDuration }} hrs</div>
     </div>
   </div>
 
   <div class="mb-6">
-    <h3 class="font-semibold mb-2">Drop (from dest airport)</h3>
-    <div *ngFor="let r of dropRoutes" class="border p-3 rounded mb-2 hover:bg-gray-100 cursor-pointer"
+    <h3 class="mb-2 font-semibold">Drop (from dest airport)</h3>
+    <div *ngFor="let r of dropRoutes" class="p-3 mb-2 border rounded cursor-pointer hover:bg-gray-100"
          (click)="selectDrop(r)">
       <div>{{ r.mode.mode }} – ₹{{ r.estimatedCost }} | {{ r.estimatedDuration }} hrs</div>
     </div>
   </div>
 
-  <button (click)="next()" class="bg-blue-500 text-white px-4 py-2 rounded">Next</button>
+  <button (click)="next()" class="px-4 py-2 text-white bg-blue-500 rounded">Next</button>
 </div>

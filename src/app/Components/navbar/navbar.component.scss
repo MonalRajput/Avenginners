@@ -1,109 +1,215 @@
-.navbar {
+:host {
+  display: block;
+}
+
+/* Navbar Base */
+nav {
+  background: #ffffff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   position: sticky;
   top: 0;
-  z-index: 1000;
-  box-shadow: var(--shadow-elevated);
-  background: var(--gradient-primary) !important;  // Blue gradient
-  color: var(--white);
+  z-index: 20;
+  transition: all 0.3s ease;
 
-  .navbar-title {
-    font-size: 1.5em;
-    font-weight: var(--font-weight-bold);
-    margin-left: 10px;
+  .max-w-7xl {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
   }
 
-  .spacer {
-    flex: 1 1 auto;
+  /* Brand / Logo */
+  a.text-2xl {
+    font-weight: 800;
+    color: #fb923c;
+    transition: color 0.3s ease, transform 0.3s ease;
+
+    &:hover {
+      color: #f97316;
+      transform: scale(1.05);
+    }
   }
 
-  // Profile Dropdown (Card-like styling)
-  .profile-dropdown {
-    width: 280px;  // Fixed width for card feel
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-elevated);
-    overflow: hidden;
+  /* Nav Links */
+  ul {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    list-style: none;
+    font-weight: 600;
+    color: #374151;
 
-    .menu-header {
+    li a {
+      position: relative;
+      color: #374151;
+      text-decoration: none;
+      transition: color 0.3s ease;
+
+      /* Animated underline on hover */
+      &::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -4px;
+        width: 0;
+        height: 2px;
+        background-color: #fb923c;
+        transition: width 0.3s ease;
+      }
+
+      &:hover,
+      &.text-orange-500 {
+        color: #fb923c;
+
+        &::after {
+          width: 100%;
+        }
+      }
+    }
+
+    /* Welcome text + icon */
+    li.flex {
       display: flex;
       align-items: center;
-      padding: 16px;
-      background: var(--neutral-light);
-      gap: 12px;
+      gap: 0.5rem;
+      color: #374151;
+      font-weight: 600;
+      animation: fadeIn 0.6s ease;
 
-      mat-icon { color: var(--primary-blue); font-size: 32px; }
-      h3 { margin: 0; color: var(--neutral-dark); }
-      p { margin: 0; color: #666; font-size: 0.9em; }
+      span {
+        font-size: 0.95rem;
+        color: #374151;
+      }
+
+      .profile-icon-btn {
+        color: #fb923c;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.3s ease, color 0.3s ease;
+
+        mat-icon {
+          font-size: 30px;
+        }
+
+        &:hover {
+          color: #f97316;
+          transform: scale(1.1);
+        }
+      }
     }
-
-    mat-menu-item {
-      transition: var(--transition-smooth);
-      &:hover { background: rgba(13, 71, 161, 0.1); }  // Subtle blue hover
-
-      mat-icon { color: var(--primary-blue); margin-right: 12px; }
-    }
-
-    // Responsive: On mobile, wider
-    @media (max-width: 768px) {
-      width: 100vw;
-      max-width: 300px;
-      right: 0 !important;
-      left: auto !important;
-    }
-  }
-
-  // Icon hover
-  button[mat-icon-button]:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-  }
-
-  .white { color: var(--white) !important; }
-}
-.profile-icon-btn {
-  // Tailwind-compatible: Small icon button
-  width: 40px !important;
-  height: 40px !important;
-  border-radius: 50% !important;
-  background: transparent !important;
-  color: #9ca3af !important;  // Gray-400 to match text-gray-700
-  transition: color 0.2s ease;
-
-  &:hover {
-    background: #fee2e2 !important;  // Light red hover (matches Tailwind)
-    color: #dc2626 !important;  // Red-600
   }
 }
 
+/* Profile Dropdown Menu */
 .profile-dropdown {
-  // Enhance card-like feel (matches your Tailwind shadow-md)
-  border-radius: 0.5rem !important;  // Tailwind rounded-lg
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;  // Tailwind shadow-md
-  min-width: 300px !important;
+  padding: 0;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  min-width: 210px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  animation: fadeInUp 0.25s ease-out;
 
   .menu-header {
-    padding: 1rem !important;  // Tailwind p-4
-    background: #f9fafb !important;  // Tailwind bg-gray-50
-    display: flex !important;
-    align-items: center !important;
-    gap: 0.75rem !important;  // Tailwind gap-3
+    padding: 1rem;
+    background: linear-gradient(90deg, #fb923c, #f97316);
+    color: #fff;
     text-align: center;
 
-    mat-icon {
-      font-size: 2rem !important;  // Larger icon
-      color: #0d47a1 !important;  // Your primary blue
-    }
+    .user-info {
+      h3 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 700;
+      }
 
-    h3 { margin: 0 !important; color: #374151 !important; font-weight: 600; }  // Tailwind text-gray-700 font-semibold
-    p { margin: 0 !important; color: #6b7280 !important; font-size: 0.875rem; }  // Tailwind text-gray-500 text-sm
+      p {
+        margin: 0.25rem 0 0;
+        font-size: 0.85rem;
+        opacity: 0.9;
+      }
+    }
   }
 
-  mat-menu-item {
-    &:hover { background: #fef2f2 !important; }  // Light red hover
+  /* Dropdown Items */
+  button.mat-menu-item {
+    font-weight: 600;
+    color: #f97316;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    padding: 0.6rem 1rem;
+
+    mat-icon {
+      color: #fb923c;
+      margin-right: 0.6rem;
+      transition: transform 0.3s ease, color 0.3s ease;
+    }
+
+    &:hover {
+      background: rgba(251, 146, 60, 0.15);
+      color: #fb923c;
+
+      mat-icon {
+        transform: scale(1.1);
+        color: #f97316;
+      }
+    }
+
+    /* Specific styles for Logout */
+    &.logout-item {
+      mat-icon {
+        color: #ef4444; /* red-500 */
+      }
+
+      &:hover {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+
+        mat-icon {
+          color: #dc2626; /* red-600 */
+        }
+      }
+    }
   }
 }
 
-// Ensure mat-icon in menu matches
-.profile-dropdown mat-icon {
-  color: #0d47a1 !important;  // Primary blue
-  margin-right: 0.75rem !important;
+/* Hover animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Responsive Navbar */
+@media (max-width: 768px) {
+  nav .max-w-7xl {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  ul {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.75rem;
+  }
+
+  a.text-2xl {
+    font-size: 1.5rem;
+  }
 }

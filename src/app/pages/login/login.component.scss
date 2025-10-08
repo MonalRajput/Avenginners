@@ -1,3 +1,156 @@
 :host {
   display: block;
 }
+// =============================
+// Login Page Styling
+// =============================
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floatUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Page Background
+.min-h-screen {
+  background: linear-gradient(135deg, #ff7e5f, #feb47b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  animation: fadeIn 1.2s ease-in-out;
+}
+
+// Login Card
+.max-w-md {
+  background: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  width: 100%;
+  animation: floatUp 0.8s ease-out;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// Title
+h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  color: #ff6600;
+  margin-bottom: 1.5rem;
+  letter-spacing: 1px;
+  position: relative;
+  animation: fadeIn 1.2s ease-in-out;
+
+  &::after {
+    content: "";
+    display: block;
+    width: 60px;
+    height: 3px;
+    background-color: #ff6600;
+    margin: 10px auto 0;
+    border-radius: 2px;
+  }
+}
+
+// Form Styling
+form {
+  animation: fadeIn 1s ease-in-out;
+}
+
+label {
+  font-weight: 600;
+  color: #333;
+}
+
+input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #ff6600;
+    box-shadow: 0 0 8px rgba(255, 102, 0, 0.3);
+    transform: scale(1.02);
+  }
+}
+
+// Button Styling
+button {
+  width: 100%;
+  background-color: #ff6600;
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #e65c00;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 102, 0, 0.3);
+  }
+
+  &:disabled {
+    background-color: #ffb380;
+    cursor: not-allowed;
+  }
+}
+
+// Error Message
+.text-red-500,
+.text-red-600 {
+  color: #e63946;
+  font-size: 0.85rem;
+  animation: fadeIn 0.6s ease-in;
+}
+
+// Link Styling
+a {
+  color: #ff6600;
+  font-weight: 600;
+  transition: all 0.3s ease;
+
+  &:hover {
+    text-decoration: underline;
+    color: #e65c00;
+  }
+}
+
+// Mobile Responsive
+@media (max-width: 600px) {
+  .max-w-md {
+    padding: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+  }
+}

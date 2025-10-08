@@ -17,6 +17,7 @@ import { AncillariesComponent } from './pages/ancillaries/ancillaries.component'
 import { StepperComponent } from './Components/stepper/stepper.component';
 import { ConfirmationComponent } from './pages/confirmation/confirmation.component';
 import { ReceiptDialogComponent } from './Components/receipt-dialog/receipt-dialog.component';
+import { NavbarComponent } from './Components/navbar/navbar.component';
 // import { HistoryComponent } from './Components/history/history.component';
 
 const routes: Routes = [
@@ -32,7 +33,7 @@ const routes: Routes = [
   // Auth Pages
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
-  
+  {path: 'app-navbar',component: NavbarComponent},
   // Booking Flow (Protected? - Add guards later if needed)
   //  { path: 'booking', component: StepperComponent },
   { path: 'flight-details/:flightId', component: FlightDetailsComponent },

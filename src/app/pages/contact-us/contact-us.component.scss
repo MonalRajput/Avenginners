@@ -5,3 +5,220 @@
 textarea {
   resize: vertical;
 }
+:host {
+  display: block;
+}
+
+/* Prevent textarea from being resized too much */
+textarea {
+  resize: vertical;
+}
+
+/* 🌅 Home Container */
+.max-w-4xl {
+  // 🔸 Soft animated gradient background (matches login theme)
+  background: linear-gradient(135deg, #fff7ed, #ffedd5, #fb923c);
+  background-size: 400% 400%;
+  animation: gradientShift 10s ease infinite, fadeInUp 1s ease-out;
+  border-radius: 1rem;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  margin-top: 2rem;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+  }
+}
+
+/* ✨ Heading Animation */
+h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #fb923c;
+  letter-spacing: 0.5px;
+  position: relative;
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  animation: slideIn 0.8s ease-out;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 0%;
+    height: 3px;
+    background-color: #fb923c;
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  &:hover::after {
+    width: 100%;
+  }
+}
+
+/* 📝 Form Styling */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  animation: fadeIn 1s ease-out both;
+
+  label {
+    font-weight: 600;
+    color: #374151;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: #fb923c;
+    }
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+
+    &:focus {
+      border-color: #fb923c;
+      box-shadow: 0 0 0 4px rgba(251, 146, 60, 0.2);
+      outline: none;
+      transform: scale(1.01);
+    }
+  }
+
+  textarea {
+    resize: none;
+  }
+
+  .text-red-500 {
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+    color: #ef4444;
+    animation: fadeIn 0.3s ease-in;
+  }
+
+  /* 🌟 Button with Glow Animation */
+  button {
+    background: linear-gradient(90deg, #fb923c, #f97316);
+    color: #fff;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.9rem;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+    animation: buttonPop 1.2s ease-in-out;
+
+    &:hover {
+      background: linear-gradient(90deg, #fb923c, #ea580c);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}
+
+/* ✅ Success Message */
+.text-green-600 {
+  text-align: center;
+  font-weight: 700;
+  color: #16a34a;
+  animation: fadeIn 0.8s ease-in;
+}
+
+/* 🔄 Keyframe Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes underlineGrow {
+  from {
+    width: 0;
+  }
+  to {
+    width: 80px;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes buttonPop {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 📱 Responsive Design */
+@media (max-width: 768px) {
+  .max-w-4xl {
+    padding: 1.5rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  input,
+  textarea {
+    font-size: 0.95rem;
+  }
+
+  button {
+    font-size: 1rem;
+  }
+}

@@ -49,6 +49,9 @@ export class StepperComponent implements OnInit, AfterViewInit {
   searchForm: FormGroup;
   selectedFlight: Flight | null = null;
   availableFlights: Flight[] = [];
+  sources: string[] = [];
+  destinations: string[] = [];
+  allDestinationsMap: { [key: string]: string[] } = {};
   // FIXED: Changed from Location | null = null to Location | undefined = undefined (matches Booking model)
   pickupLocation: Location | undefined = undefined;
   pickupTransports: TransportMode[] = [];
@@ -76,7 +79,7 @@ export class StepperComponent implements OnInit, AfterViewInit {
       seatsAvailable: 150, 
       price: 4500, 
       duration: '2h 00m',
-      date: '2025-10-06'  // FIXED: YYYY-MM-DD (matches UI input and error suggestions)
+      date: '2025-10-08'  // FIXED: YYYY-MM-DD (matches UI input and error suggestions)
     },
     { 
       id: 2, 
@@ -89,7 +92,7 @@ export class StepperComponent implements OnInit, AfterViewInit {
       seatsAvailable: 100, 
       price: 6000, 
       duration: '2h 00m',
-      date: '2025-10-06'  // FIXED: YYYY-MM-DD
+      date: '2025-10-08'  // FIXED: YYYY-MM-DD
     },
     // Mumbai → Delhi (Oct 2, 2024)
     { 
@@ -103,7 +106,7 @@ export class StepperComponent implements OnInit, AfterViewInit {
       seatsAvailable: 120, 
       price: 4800, 
       duration: '2h 00m',
-      date: '2024-10-02'  // FIXED: YYYY-MM-DD
+      date: '2024-10-08'  // FIXED: YYYY-MM-DD
     },
     // Delhi → Bangalore (Oct 1, 2024)
     { 
@@ -256,8 +259,49 @@ export class StepperComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.ancillaries = [...this.mockAncillaries];
-    console.log('Stepper initialized with updated mocks');
+  // ✅ Unique sources
+  this.sources = Array.from(new Set(this.mockFlights.map(f => f.fromAirport.toUpperCase())));
+
+  // ✅ Build route map
+  this.mockFlights.forEach(f => {
+    const src = f.fromAirport.toUpperCase();
+    const dest = f.toAirport.toUpperCase();
+
+    if (!this.allDestinationsMap[src]) {
+      this.allDestinationsMap[src] = [];
+    }
+    if (!this.allDestinationsMap[src].includes(dest)) {
+      this.allDestinationsMap[src].push(dest);
+    }
+  });
+
+  console.log('✅ Route Map Built:', this.allDestinationsMap);
+  console.log('Sources:', this.sources);
+console.log('Destinations Map:', this.allDestinationsMap);
+}
+
+onSourceSelected(source: string): void {
+  if (!source) return;
+
+  const code = source.toUpperCase().trim();
+  console.log('🟦 Selected source:', code);
+
+  // Get destinations for this source
+  const dests = this.allDestinationsMap[code] || [];
+  console.log('🟩 Matching destinations:', dests);
+
+  // Update destinations array **immutably** so Angular detects the change
+  this.destinations = [...dests];
+
+  // Reset the destination form control
+  this.searchForm.get('destination')?.reset();
+
+  if (!this.destinations.length) {
+    this.errorMessage = `No destinations available from ${code}.`;
+  } else {
+    this.errorMessage = null;
   }
+}
 
   ngAfterViewInit(): void {
     if (this.stepper) {
@@ -266,61 +310,53 @@ export class StepperComponent implements OnInit, AfterViewInit {
   }
 
   // Improved onSearchFlights() - Flexible city mapping + destination filter + date handling
-  onSearchFlights(): void {
-    if (this.searchForm.valid) {
-      this.isLoading = true;
-      this.errorMessage = null;
-      const { source, destination, travelDate } = this.searchForm.value;
+ onSearchFlights(): void {
+  if (this.searchForm.valid) {
+    this.isLoading = true;
+    this.errorMessage = null;
+    const { source, destination, travelDate } = this.searchForm.value;
 
-      // Normalize inputs (lowercase, trim)
-      const normSource = source.toLowerCase().trim();
-      const normDest = destination.toLowerCase().trim();
+    // ✅ Normalize city or airport input
+    const sourceCode = this.getAirportCode(source);
+    const destCode = this.getAirportCode(destination);
 
-      setTimeout(() => {
-        // Map cities to airport codes (fuzzy: check if input matches any key)
-        const sourceAirport = this.getAirportCode(normSource);
-        const destAirport = this.getAirportCode(normDest);
-
-        if (!sourceAirport || !destAirport) {
-          this.errorMessage = `Invalid route. Try cities like Delhi, Mumbai, or Bangalore. (Mapped: ${sourceAirport || 'None'} → ${destAirport || 'None'})`;
-          this.isLoading = false;
-          return;
-        }
-
-        // Filter by BOTH fromAirport AND toAirport (case-insensitive)
-        // Date: Match if provided in mock, or ignore (flexible for future)
-        this.availableFlights = this.mockFlights.filter(f => 
-          f.fromAirport.toUpperCase() === sourceAirport.toUpperCase() &&
-          f.toAirport.toUpperCase() === destAirport.toUpperCase() &&
-          (!travelDate || !f.date || f.date === travelDate)  // Flexible date: Skip if no date in mock or input
-        );
-
-        if (this.availableFlights.length === 0) {
-          // More helpful message with suggestions - FIXED: Matches mock dates
-          this.errorMessage = `No flights available for ${source} → ${destination} on ${travelDate}. Try: Delhi → Mumbai on 2024-10-01, or Mumbai → Delhi on 2024-10-02.`;
-        } else {
-          this.bookingData = { ...this.bookingData, from: source, to: destination, travelDate };
-          this.bookingService.updateBooking(this.bookingData);
-          console.log(`Found ${this.availableFlights.length} flights for ${sourceAirport} → ${destAirport} on ${travelDate || 'Any date'}`);
-          if (this.stepper) this.stepper.next();
-        }
-        this.isLoading = false;
-      }, 1000);  // Simulate API delay
-    } else {
-      this.errorMessage = 'Please fill source, destination, and travel date correctly (YYYY-MM-DD).';
+    if (!sourceCode || !destCode) {
+      this.errorMessage = `Invalid route. Try Delhi → Mumbai or Bangalore. (Mapped: ${sourceCode || 'None'} → ${destCode || 'None'})`;
+      this.isLoading = false;
+      return;
     }
+
+    // ✅ Match flights by airport codes
+    this.availableFlights = this.mockFlights.filter(
+      f =>
+        f.fromAirport.toUpperCase() === sourceCode &&
+        f.toAirport.toUpperCase() === destCode &&
+        (!travelDate || f.date === travelDate)
+    );
+
+    if (this.availableFlights.length === 0) {
+      this.errorMessage = `No flights found for ${source} → ${destination} on ${travelDate}. Try another date or city.`;
+    } else {
+      this.bookingData = { ...this.bookingData, from: source, to: destination, travelDate };
+      this.bookingService.updateBooking(this.bookingData);
+      console.log(`✈ Found flights for ${sourceCode} → ${destCode}:`, this.availableFlights);
+      if (this.stepper) this.stepper.next();
+    }
+
+    this.isLoading = false;
+  } else {
+    this.errorMessage = 'Please fill all fields correctly (YYYY-MM-DD date format).';
   }
+}
 
   // Helper to map city input to airport code (fuzzy matching)
-  private getAirportCode(input: string): string | null {
-    // Direct match or contains any key in map
-    for (const [city, code] of Object.entries(this.cityToAirportMap)) {
-      if (input === city || input.includes(city)) {
-        return code;
-      }
-    }
-    return null;  // No match
+ private getAirportCode(input: string): string | null {
+  const norm = input.toLowerCase().trim();
+  for (const [key, code] of Object.entries(this.cityToAirportMap)) {
+    if (norm === key || norm.includes(key)) return code;
   }
+  return input.length === 3 ? input.toUpperCase() : null; // Allow direct code input (DEL)
+}
 
   // Select Flight (Stores full flight object now allowed in model)
   selectFlight(flight: Flight): void {

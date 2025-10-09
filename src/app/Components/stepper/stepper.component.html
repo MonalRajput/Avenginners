@@ -21,17 +21,20 @@
         </ng-template>
 
         <form [formGroup]="searchForm" (ngSubmit)="onSearchFlights()" class="grid gap-4 p-6 bg-gray-50 rounded-xl">
-          <mat-form-field appearance="outline">
-            <mat-label>Source</mat-label>
-            <input matInput formControlName="source" placeholder="e.g., Delhi">
-            <mat-error *ngIf="searchForm.get('source')?.invalid">Source is required</mat-error>
-          </mat-form-field>
+          <mat-form-field appearance="outline" class="w-full">
+  <mat-label>Source</mat-label>
+  <mat-select formControlName="source" (selectionChange)="onSourceSelected($event.value)">
+    <mat-option *ngFor="let src of sources" [value]="src">{{ src }}</mat-option>
+  </mat-select>
+</mat-form-field>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Destination</mat-label>
-            <input matInput formControlName="destination" placeholder="e.g., Mumbai">
-            <mat-error *ngIf="searchForm.get('destination')?.invalid">Destination is required</mat-error>
-          </mat-form-field>
+<mat-form-field appearance="outline" class="w-full">
+  <mat-label>Destination</mat-label>
+  <mat-select formControlName="destination">
+    <mat-option *ngFor="let dest of destinations" [value]="dest">{{ dest }}</mat-option>
+  </mat-select>
+</mat-form-field>
+
 
           <mat-form-field appearance="outline">
             <mat-label>Travel Date</mat-label>

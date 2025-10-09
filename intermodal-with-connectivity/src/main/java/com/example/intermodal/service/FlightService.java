@@ -18,7 +18,7 @@ public class FlightService {
     }
 
     public List<FlightDto> search(String from, String to, String date) {
-        List<Flight> flights = flightRepository.findByFromAirportAndToAirportAndDate(from, to, date);
+        List<Flight> flights = flightRepository.search(from, to, date);
         return flights.stream().map(this::toDto).collect(Collectors.toList());
     }
 

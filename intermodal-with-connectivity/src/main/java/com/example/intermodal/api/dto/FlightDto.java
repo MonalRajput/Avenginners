@@ -6,6 +6,9 @@ public class FlightDto {
     private String airline;
     private String fromAirport;
     private String toAirport;
+    // Compatibility with another Angular model variant
+    private String sourceAirport;
+    private String destinationAirport;
     private String departureTime;
     private String arrivalTime;
     private Integer seatsAvailable;
@@ -23,6 +26,10 @@ public class FlightDto {
     public void setFromAirport(String fromAirport) { this.fromAirport = fromAirport; }
     public String getToAirport() { return toAirport; }
     public void setToAirport(String toAirport) { this.toAirport = toAirport; }
+    public String getSourceAirport() { return sourceAirport; }
+    public void setSourceAirport(String sourceAirport) { this.sourceAirport = sourceAirport; }
+    public String getDestinationAirport() { return destinationAirport; }
+    public void setDestinationAirport(String destinationAirport) { this.destinationAirport = destinationAirport; }
     public String getDepartureTime() { return departureTime; }
     public void setDepartureTime(String departureTime) { this.departureTime = departureTime; }
     public String getArrivalTime() { return arrivalTime; }

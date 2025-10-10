@@ -1,0 +1,42 @@
+server:
+  port: 8080
+
+spring:
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:4200"
+            allowedMethods: "GET,POST,PUT,DELETE,OPTIONS"
+            allowedHeaders: "*"
+            allowCredentials: true
+      routes:
+        - id: auth
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth/**
+        - id: flights
+          uri: lb://flight-service
+          predicates:
+            - Path=/api/flights/**
+        - id: bookings
+          uri: lb://booking-service
+          predicates:
+            - Path=/api/bookings/**
+        - id: ancillaries
+          uri: lb://ancillary-service
+          predicates:
+            - Path=/api/ancillaries/**
+        - id: transport
+          uri: lb://transport-service
+          predicates:
+            - Path=/api/transport-options/**
+  application:
+    name: gateway
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/

@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS flights (
     seats_available INT,
     price INT,
     duration VARCHAR(50),
-    date VARCHAR(20)
+    "DATE" VARCHAR(20)
 );
 
 CREATE TABLE IF NOT EXISTS ancillaries (

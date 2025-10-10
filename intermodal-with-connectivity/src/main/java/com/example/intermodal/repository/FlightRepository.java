@@ -16,7 +16,7 @@ public interface FlightRepository extends JpaRepository<Flight, Long> {
             " OR LOWER(:fromKey) LIKE LOWER(CONCAT('%', f.fromAirport, '%'))) " +
             "AND (LOWER(f.toAirport) LIKE LOWER(CONCAT('%', :toKey, '%')) " +
             " OR LOWER(:toKey) LIKE LOWER(CONCAT('%', f.toAirport, '%'))) " +
-            "AND (:dateKey IS NULL OR f.date = :dateKey)")
+            "AND (:dateKey IS NULL OR f.flightDate = :dateKey)")
     List<Flight> search(@Param("fromKey") String fromKey,
                         @Param("toKey") String toKey,
                         @Param("dateKey") String dateKey);

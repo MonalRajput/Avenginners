@@ -33,7 +33,9 @@ public class Flight {
 
     private String duration;
 
-    private String date;
+    // Map to DB column named DATE (Oracle) while avoiding Java reserved name conflicts
+    @Column(name = "DATE")
+    private String flightDate;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -55,6 +57,6 @@ public class Flight {
     public void setPrice(Integer price) { this.price = price; }
     public String getDuration() { return duration; }
     public void setDuration(String duration) { this.duration = duration; }
-    public String getDate() { return date; }
-    public void setDate(String date) { this.date = date; }
+    public String getFlightDate() { return flightDate; }
+    public void setFlightDate(String flightDate) { this.flightDate = flightDate; }
 }

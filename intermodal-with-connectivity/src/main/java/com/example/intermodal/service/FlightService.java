@@ -78,7 +78,7 @@ public class FlightService {
         dto.setSeatsAvailable(f.getSeatsAvailable());
         dto.setPrice(f.getPrice());
         dto.setDuration(f.getDuration());
-        dto.setDate(f.getDate());
+        dto.setDate(f.getFlightDate());
         return dto;
     }
 

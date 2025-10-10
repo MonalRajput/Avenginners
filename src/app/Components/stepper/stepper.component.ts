@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { BookingService } from '../../Services/booking.service';  // Adjust path if needed
+import { ApiService } from 'src/app/Services/api.service';
 import { 
   BookingRequest, 
   Flight, 
@@ -243,6 +244,7 @@ export class StepperComponent implements OnInit, AfterViewInit {
   constructor(
     private fb: FormBuilder,
     private bookingService: BookingService,
+    private api: ApiService,
     private router: Router
   ) {
     // Default travelDate to today (YYYY-MM-DD) for easier testing
@@ -265,7 +267,7 @@ export class StepperComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // Improved onSearchFlights() - Flexible city mapping + destination filter + date handling
+  // Improved onSearchFlights() - Backend search via gateway + fallback to mocks
   onSearchFlights(): void {
     if (this.searchForm.valid) {
       this.isLoading = true;
@@ -276,36 +278,34 @@ export class StepperComponent implements OnInit, AfterViewInit {
       const normSource = source.toLowerCase().trim();
       const normDest = destination.toLowerCase().trim();
 
-      setTimeout(() => {
-        // Map cities to airport codes (fuzzy: check if input matches any key)
-        const sourceAirport = this.getAirportCode(normSource);
-        const destAirport = this.getAirportCode(normDest);
-
-        if (!sourceAirport || !destAirport) {
-          this.errorMessage = `Invalid route. Try cities like Delhi, Mumbai, or Bangalore. (Mapped: ${sourceAirport || 'None'} → ${destAirport || 'None'})`;
+      // Call backend via gateway
+      this.api.searchFlights(source, destination, travelDate).subscribe({
+        next: flights => {
+          this.availableFlights = flights;
+          if (!flights || flights.length === 0) {
+            // Fallback: try mapped codes using mocks
+            const sourceAirport = this.getAirportCode(normSource);
+            const destAirport = this.getAirportCode(normDest);
+            this.availableFlights = this.mockFlights.filter(f => 
+              (!sourceAirport || f.fromAirport.toUpperCase() === sourceAirport.toUpperCase()) &&
+              (!destAirport || f.toAirport.toUpperCase() === destAirport.toUpperCase()) &&
+              (!travelDate || !f.date || f.date === travelDate)
+            );
+          }
+          if (this.availableFlights.length === 0) {
+            this.errorMessage = `No flights available for ${source} → ${destination} on ${travelDate}.`;
+          } else {
+            this.bookingData = { ...this.bookingData, from: source, to: destination, travelDate };
+            this.bookingService.updateBooking(this.bookingData);
+            if (this.stepper) this.stepper.next();
+          }
           this.isLoading = false;
-          return;
+        },
+        error: _ => {
+          this.isLoading = false;
+          this.errorMessage = 'Search failed. Please try again.';
         }
-
-        // Filter by BOTH fromAirport AND toAirport (case-insensitive)
-        // Date: Match if provided in mock, or ignore (flexible for future)
-        this.availableFlights = this.mockFlights.filter(f => 
-          f.fromAirport.toUpperCase() === sourceAirport.toUpperCase() &&
-          f.toAirport.toUpperCase() === destAirport.toUpperCase() &&
-          (!travelDate || !f.date || f.date === travelDate)  // Flexible date: Skip if no date in mock or input
-        );
-
-        if (this.availableFlights.length === 0) {
-          // More helpful message with suggestions - FIXED: Matches mock dates
-          this.errorMessage = `No flights available for ${source} → ${destination} on ${travelDate}. Try: Delhi → Mumbai on 2024-10-01, or Mumbai → Delhi on 2024-10-02.`;
-        } else {
-          this.bookingData = { ...this.bookingData, from: source, to: destination, travelDate };
-          this.bookingService.updateBooking(this.bookingData);
-          console.log(`Found ${this.availableFlights.length} flights for ${sourceAirport} → ${destAirport} on ${travelDate || 'Any date'}`);
-          if (this.stepper) this.stepper.next();
-        }
-        this.isLoading = false;
-      }, 1000);  // Simulate API delay
+      });
     } else {
       this.errorMessage = 'Please fill source, destination, and travel date correctly (YYYY-MM-DD).';
     }

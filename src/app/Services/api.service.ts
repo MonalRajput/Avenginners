@@ -25,10 +25,15 @@ export class ApiService {
     const params = { from, to, date };
     console.log('API Call: Searching flights from', from, 'to', to, 'on', date);
 
-    return this.http.get<Flight[]>(`${this.apiUrl}/flights/search`, { params }).pipe(
+    return this.http.get<any[]>(`${this.apiUrl}/flights/search`, { params }).pipe(
       map(response => {
-        console.log('API Response:', response);
-        return response;
+        // Normalize backend fields (flightDate -> date)
+        const normalized: Flight[] = (response || []).map((f: any) => ({
+          ...f,
+          date: f?.date ?? f?.flightDate ?? null
+        }));
+        console.log('API Response (normalized):', normalized);
+        return normalized;
       }),
       catchError(this.handleError('searchFlights', []))
     );

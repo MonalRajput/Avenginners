@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -6,8 +9,9 @@ import { Injectable } from '@angular/core';
 export class AuthService {
   private _isLoggedIn: boolean = false;
   private _user: any = null;
+  private readonly gatewayBase = 'http://localhost:8080';
 
-  constructor() {
+  constructor(private http: HttpClient) {
     // FIXED: Load persisted state on init (prevents reset on reload)
     this.loadAuthState();
   }
@@ -32,6 +36,17 @@ export class AuthService {
     return !!token && this._isLoggedIn;
   }
 
+  getToken(): string | null {
+    return localStorage.getItem('authToken');
+  }
+
+  private setAuth(token: string, user: any) {
+    this._isLoggedIn = true;
+    this._user = user;
+    localStorage.setItem('authToken', token);
+    localStorage.setItem('user', JSON.stringify(user));
+  }
+
   getUserName(): string {  // For navbar (note: space in name for prior compatibility)
     return this._user ? this._user.name : 'Guest';
   }
@@ -42,6 +57,7 @@ export class AuthService {
 
   // FIXED: Flexible mock login (accepts any email/password for testing)
   // Change to strict: if (email === 'user@example.com' && password === 'password')
+  // Synchronous mock login (kept for fallback/manual testing)
   login(email: string, password: string): boolean {
     if (email && password) {  // FIXED: Any non-empty for easy testing
       // FIXED: Mock success (in real: call ApiService.login(email, password))
@@ -62,6 +78,29 @@ export class AuthService {
     }
     console.log('Login failed: Invalid credentials');  // Debug
     return false;
+  }
+
+  // Real API login via gateway -> /auth/login
+  apiLogin(email: string, password: string): Observable<boolean> {
+    const body = { username: email, password };
+    return this.http.post<{ token: string }>(`${this.gatewayBase}/auth/login`, body).pipe(
+      map(res => {
+        const token = res?.token;
+        if (!token) return false;
+        const user = { name: email.split('@')[0] || 'User', email };
+        this.setAuth(token, user);
+        return true;
+      }),
+      catchError(() => of(false))
+    );
+  }
+
+  register(email: string, password: string): Observable<boolean> {
+    const body = { username: email, password };
+    return this.http.post<any>(`${this.gatewayBase}/auth/register`, body).pipe(
+      map(() => true),
+      catchError(() => of(false))
+    );
   }
 
   // FIXED: Logout clears everything

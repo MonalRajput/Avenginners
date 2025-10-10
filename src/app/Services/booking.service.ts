@@ -53,7 +53,7 @@ export class BookingService {
     return total;
   }
 
-  confirmBooking(userId: number = 1): Observable<any> {  // Mock user ID
+  confirmBooking(userId: number = 1): Observable<any> {  // Mock user ID fallback
     const data = { ...this.getCurrentBooking(), userId };
     return this.api.createBooking(data);
   }

@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HTTP_INTERCEPTORS, HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
+import { Injectable as NgInjectable } from '@angular/core';
+import { AuthService } from './auth.service';
+import { Observable as RxObservable } from 'rxjs';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';  // Use map for transformation
 import { Ancillary, Flight } from 'src/app/Models/booking.model';  // Adjust path
@@ -10,7 +13,7 @@ import { TransportMode } from 'src/app/Models/booking.model';
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = 'http://localhost:8080/api';  // Backend URL
+  private apiUrl = 'http://localhost:8080/api';  // Gateway URL
 
   constructor(private http: HttpClient) {}
 
@@ -25,11 +28,6 @@ export class ApiService {
     return this.http.get<Flight[]>(`${this.apiUrl}/flights/search`, { params }).pipe(
       map(response => {
         console.log('API Response:', response);
-        // Fallback: If empty or null, return mocks (all paths return Flight[])
-        if (!response || response.length === 0) {
-          console.warn('No flights from backend—using mock data');
-          return this.getMockFlights(from, to, date);
-        }
         return response;
       }),
       catchError(this.handleError('searchFlights', []))
@@ -56,10 +54,12 @@ export class ApiService {
    * @param airportCode Airport code (e.g., 'DEL')
    * @returns Observable<TransportMode[]>
    */
+  // Switch to backend transport options via gateway
   getTransportModes(type: 'pre' | 'post', address: string, airportCode: string): Observable<TransportMode[]> {
     console.log('API Call: Getting transport modes for', type, 'at', airportCode, 'from', address);
-    // Mock: Simulate backend; replace with http.get later
-    return of(this.getMockTransportModes(type, address, airportCode)).pipe(
+    const locationId = 1; // TODO: replace with real value when available
+    const airportId = 1;  // TODO: derive from airportCode if needed
+    return this.http.get<TransportMode[]>(`${this.apiUrl}/transport-options`, { params: { locationId, airportId } }).pipe(
       catchError(this.handleError('getTransportModes', []))
     );
   }
@@ -176,20 +176,22 @@ export class ApiService {
   }
 
   getAncillaries(): Observable<Ancillary[]> {
-  console.log('API Call: Getting ancillaries');
-  // Mock: Simulate backend; replace with http.get later
-  return of(this.getMockAncillaries()).pipe(
-    catchError(this.handleError('getAncillaries', []))
-  );
+    console.log('API Call: Getting ancillaries');
+    return this.http.get<Ancillary[]>(`${this.apiUrl}/ancillaries`).pipe(
+      catchError(this.handleError('getAncillaries', []))
+    );
+  }
 }
-// NEW: Mock ancillaries based on Ancillary interface
-private getMockAncillaries(): Ancillary[] {
-  return [
-    { id: 1, name: 'Extra Baggage (20kg)', description: 'Additional checked baggage', price: 800, category: 'baggage', selected: false },
-    { id: 2, name: 'Veg Meal', description: 'Vegetarian in-flight meal', price: 300, category: 'meal', selected: false },
-    { id: 3, name: 'Window Seat', description: 'Preferred window seat selection', price: 500, category: 'seat', selected: false },
-    { id: 4, name: 'Priority Boarding', description: 'Fast-track boarding', price: 400, category: 'other', selected: false },
-    { id: 5, name: 'Travel Insurance', description: 'Basic trip protection', price: 600, category: 'other', selected: false }
-  ];
-}
+
+@NgInjectable()
+export class JwtInterceptor implements HttpInterceptor {
+  constructor(private auth: AuthService) {}
+  intercept(req: HttpRequest<any>, next: HttpHandler): RxObservable<HttpEvent<any>> {
+    const token = this.auth.getToken();
+    if (token) {
+      const cloned = req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
+      return next.handle(cloned);
+    }
+    return next.handle(req);
+  }
 }

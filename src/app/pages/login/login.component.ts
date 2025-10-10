@@ -25,11 +25,13 @@ export class LoginComponent {
     this.submitted = true;
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
-      if (this.auth.login(email, password)) {
-        this.router.navigate(['/']);
-      } else {
-        this.errorMessage = 'Invalid email or password';
-      }
+      this.auth.apiLogin(email, password).subscribe((ok) => {
+        if (ok) {
+          this.router.navigate(['/']);
+        } else {
+          this.errorMessage = 'Invalid email or password';
+        }
+      });
     }
   }
 }

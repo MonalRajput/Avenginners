@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';  // FIXED: Single import (essential for Material)
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // FIXED: Angular Material Modules (All Active & De-Duplicated)
@@ -54,7 +54,7 @@ import { ContactUsComponent } from './pages/contact-us/contact-us.component';
 import { StepperComponent } from './Components/stepper/stepper.component';
 
 // Services (If not providedIn: 'root', keep here; otherwise remove to avoid duplicates)
-import { ApiService } from './Services/api.service';
+import { ApiService, JwtInterceptor } from './Services/api.service';
 import { BookingService } from './Services/booking.service';
 import { AuthService } from './Services/auth.service';
 import { ProfileDialogComponent } from './Components/profile-dialog/profile-dialog.components';
@@ -121,7 +121,8 @@ import { ProfileDialogComponent } from './Components/profile-dialog/profile-dial
     // If they have @Injectable({ providedIn: 'root' }), remove these lines to avoid errors:
     // ApiService,
     // BookingService,
-    // AuthService
+    // AuthService,
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

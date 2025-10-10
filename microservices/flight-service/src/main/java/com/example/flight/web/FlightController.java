@@ -16,18 +16,18 @@ public class FlightController {
 
   @GetMapping("/search")
   public ResponseEntity<List<Flight>> search(@RequestParam String from, @RequestParam String to,
-                                             @RequestParam(name = "date", required = false) String date,
+//                                             @RequestParam(name = "flightdate", required = false) String date,
                                              @RequestParam(name = "flightdate", required = false) String flightdate) {
-    String effectiveDate = (date != null && !date.isBlank()) ? date : flightdate;
+    String effectiveDate = (flightdate != null && !flightdate.isBlank()) ? flightdate : flightdate;
     return ResponseEntity.ok(repo.search(from, to, effectiveDate));
   }
 
   @GetMapping
   public ResponseEntity<List<Flight>> searchByCity(@RequestParam(name = "sourceCity") String sourceCity,
                                                    @RequestParam(name = "destinationCity") String destinationCity,
-                                                   @RequestParam(name = "date", required = false) String date,
+//                                                   @RequestParam(name = "date", required = false) String date,
                                                    @RequestParam(name = "flightdate", required = false) String flightdate) {
-    String effectiveDate = (date != null && !date.isBlank()) ? date : flightdate;
+    String effectiveDate = (flightdate != null && !flightdate.isBlank()) ? flightdate : flightdate;
     return ResponseEntity.ok(repo.search(sourceCity, destinationCity, effectiveDate));
   }
 }

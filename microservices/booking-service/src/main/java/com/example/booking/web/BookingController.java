@@ -14,6 +14,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Map;
 
+import javax.crypto.SecretKey;
+
 @RestController
 @RequestMapping("/api/bookings")
 @CrossOrigin(origins = "http://localhost:4200")
@@ -33,7 +35,7 @@ public class BookingController {
     }
     try {
       String token = auth.substring(7);
-      Claims claims = Jwts.parser().verifyWith(KEY).build().parseSignedClaims(token).getPayload();
+      Claims claims = Jwts.parser().verifyWith((SecretKey) KEY).build().parseSignedClaims(token).getPayload();
       Long uid = claims.get("uid", Long.class);
       Booking b = new Booking();
       b.setUserId(uid);

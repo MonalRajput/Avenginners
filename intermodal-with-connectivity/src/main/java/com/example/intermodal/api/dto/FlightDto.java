@@ -14,7 +14,7 @@ public class FlightDto {
     private Integer seatsAvailable;
     private Integer price;
     private String duration;
-    private String date;
+    private String flightdate;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -40,6 +40,6 @@ public class FlightDto {
     public void setPrice(Integer price) { this.price = price; }
     public String getDuration() { return duration; }
     public void setDuration(String duration) { this.duration = duration; }
-    public String getDate() { return date; }
-    public void setDate(String date) { this.date = date; }
+    public String getDate() { return flightdate; }
+    public void setDate(String flightdate) { this.flightdate = flightdate; }
 }

@@ -28,10 +28,10 @@ public class FlightController {
     public ResponseEntity<List<FlightDto>> search(
             @RequestParam String from,
             @RequestParam String to,
-            @RequestParam(name = "date", required = false) String date,
+//            @RequestParam(name = "flightdate", required = false) String date,
             @RequestParam(name = "flightdate", required = false) String flightdate
     ) {
-        String effectiveDate = (date != null && !date.isBlank()) ? date : flightdate;
+        String effectiveDate = (flightdate != null && !flightdate.isBlank()) ? flightdate : flightdate;
         List<FlightDto> flights = flightService.search(from, to, effectiveDate);
         return ResponseEntity.ok(flights);
     }
@@ -43,7 +43,7 @@ public class FlightController {
             @RequestParam(name = "date", required = false) String date,
             @RequestParam(name = "flightdate", required = false) String flightdate
     ) {
-        String effectiveDate = (date != null && !date.isBlank()) ? date : flightdate;
+        String effectiveDate = (flightdate != null && !flightdate.isBlank()) ? date : flightdate;
         List<FlightDto> flights = flightService.search(sourceCity, destinationCity, effectiveDate);
         return ResponseEntity.ok(flights);
     }

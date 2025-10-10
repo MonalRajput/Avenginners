@@ -25,10 +25,10 @@ public class FlightService {
         this.flightRepository = flightRepository;
     }
 
-    public List<FlightDto> search(String from, String to, String date) {
+    public List<FlightDto> search(String from, String to, String flightdate) {
         String fromInput = safe(from);
         String toInput = safe(to);
-        String dateInput = isBlank(date) ? null : date;
+        String dateInput = isBlank(flightdate) ? null : flightdate;
 
         // First try with raw inputs
         List<Flight> flights = new ArrayList<>(flightRepository.search(fromInput, toInput, dateInput));
@@ -59,7 +59,7 @@ public class FlightService {
         List<Flight> deduped = new ArrayList<>(unique.values());
 
         List<FlightDto> result = deduped.stream().map(this::toDto).collect(Collectors.toList());
-        log.info("Flight search: from='{}' to='{}' date='{}' -> {} result(s)", from, to, date, result.size());
+        log.info("Flight search: from='{}' to='{}' date='{}' -> {} result(s)", from, to, flightdate, result.size());
         return result;
     }
 

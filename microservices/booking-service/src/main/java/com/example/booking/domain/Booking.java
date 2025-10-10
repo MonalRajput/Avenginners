@@ -1,7 +1,8 @@
 package com.example.booking.domain;
 
-import jakarta.persistence.*;
 import java.time.Instant;
+
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "bookings")

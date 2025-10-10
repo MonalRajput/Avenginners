@@ -1,0 +1,55 @@
+<div class="min-h-screen bg-gray-50 py-8 px-4">
+  <div class="max-w-4xl mx-auto">
+    <!-- Breadcrumb -->
+    <nav class="mb-6 text-sm text-gray-500">
+      <a routerLink="/" class="hover:underline">Home</a> > <span>Flight Details</span>
+    </nav>
+
+    <!-- Flight Details Card -->
+    <div *ngIf="flight" class="bg-white rounded-xl shadow-md p-8 mb-8 border-l-4 border-blue-500">
+      <h2 class="text-3xl font-bold mb-4 text-gray-800">Flight Details</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div>
+          <p class="text-lg"><strong>Airline:</strong> Airline XYZ - Flight #{{ flight.id }}</p>
+          <p class="text-lg"><strong>Route:</strong> {{ flight.fromAirport }} (Dep: {{ flight.departureTime }}) → {{ flight.toAirport }} (Arr: {{ flight.arrivalTime }})</p>
+          <p class="text-lg"><strong>Duration:</strong> {{ flight.duration }}</p>
+        </div>
+        <div class="text-right md:text-left">
+          <p class="text-4xl font-bold text-green-600 mb-2">₹{{ flight.price }}</p>
+          <p class="text-gray-600">Base Fare (Economy)</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Seat Selection Card -->
+    <div class="bg-white rounded-xl shadow-md p-8">
+      <h2 class="text-3xl font-bold mb-4 text-gray-800">Seat Selection</h2>
+      <p class="text-gray-600 mb-4">Choose your preferred seat type. Extra charges may apply.</p>
+      <form [formGroup]="seatForm" class="space-y-4">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Select Seat Type</mat-label>
+          <mat-select formControlName="seatType">
+            <mat-option value="">Standard Seat (No Extra Cost)</mat-option>
+            <mat-option *ngFor="let seat of seats" [value]="seat.type">
+              {{ seat.type }} Seat (Extra ₹{{ seat.price }})
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="seatForm.get('seatType')?.invalid">Please select a seat type</mat-error>
+        </mat-form-field>
+        
+        <div class="flex flex-col sm:flex-row gap-4 pt-4">
+          <button mat-stroked-button routerLink="/" class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg">Back to Search</button>
+          <button mat-raised-button color="accent" (click)="onContinue()" class="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-semibold"
+                  [disabled]="seatForm.invalid || isLoading">
+            Continue to Pre-Flight Transport
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div *ngIf="isLoading" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <mat-spinner diameter="50" class="text-white"></mat-spinner>
+    </div>
+  </div>
+</div>

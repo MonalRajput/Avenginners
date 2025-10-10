@@ -1,0 +1,32 @@
+<div class="max-w-4xl mx-auto px-4 py-12">
+  <h1 class="text-3xl font-bold mb-8 text-center">Add-On Services</h1>
+  <p class="text-center text-gray-600 mb-8">Optional extras to enhance your journey.</p>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="flex justify-center py-8">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+
+  <!-- Ancillaries List -->
+  <div *ngIf="!isLoading" class="bg-white rounded-xl shadow-md p-6 space-y-4">
+    <mat-card *ngFor="let ancillary of ancillaries" class="w-full">
+      <mat-card-content class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <mat-checkbox [(ngModel)]="ancillary.selected" (change)="toggleAncillary(ancillary)">
+            {{ ancillary.name }}
+          </mat-checkbox>
+          <p class="text-sm text-gray-500">{{ ancillary.description }}</p>
+        </div>
+        <span class="text-green-600 font-semibold">₹{{ ancillary.price }}</span>
+      </mat-card-content>
+    </mat-card>
+
+    <div class="text-right mt-6">
+      <p class="text-xl font-bold">Subtotal: ₹{{ ancillaryTotal }}</p>
+    </div>
+  </div>
+
+  <button mat-raised-button color="primary" (click)="onContinue()" class="w-full mt-6 bg-orange-500 hover:bg-orange-600 text-white py-3 font-semibold">
+    Proceed to Confirmation
+  </button>
+</div>

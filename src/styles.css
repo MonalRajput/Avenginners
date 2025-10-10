@@ -1,0 +1,63 @@
+
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';  
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* // Custom Variables (Airline Theme: Blues, Whites, Accents) */
+:root {
+  --primary-color: #2196f3;  
+  --secondary-color: #ff9800;  
+  --success-color: #4caf50;  
+  --error-color: #f44336;  
+  --bg-light: #f8f9fa;
+  --text-dark: #333;
+  --shadow: 0 4px 8px rgba(0,0,0,0.1);
+  --border-radius: 8px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);  
+}
+
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;  
+  background: linear-gradient(135deg, var(--bg-light), #e3f2fd); 
+  color: var(--text-dark);
+}
+
+.full-width { width: 100%; }
+.container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+
+mat-icon {
+  vertical-align: middle;
+  width: 24px;
+  height: 24px;
+  font-size: 24px;
+  &.success { color: var(--success-color); }
+  &.error { color: var(--error-color); }
+  &.primary { color: var(--primary-color); }
+}
+
+
+button.mat-raised-button {
+  transition: var(--transition);
+  &:hover { transform: scale(1.05); box-shadow: var(--shadow); }
+}
+
+
+.mat-snack-bar-container { background: var(--primary-color) !important; color: white; }
+.mat-simple-snackbar { justify-content: space-between; }
+
+@media (max-width: 768px) {
+  .container { padding: 10px; }
+  mat-card { margin: 10px 0; }
+}
+
+
+.video-bg {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  object-fit: cover; z-index: -1; opacity: 0.3;
+}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

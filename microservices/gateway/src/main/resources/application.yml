@@ -1,0 +1,36 @@
+server:
+  port: 8080
+
+spring:
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:4200"
+            allowedMethods: "GET,POST,PUT,DELETE,OPTIONS"
+            allowedHeaders: "*"
+            allowCredentials: true
+      routes:
+        - id: auth
+          uri: http://localhost:9001
+          predicates:
+            - Path=/auth/**
+        - id: flights
+          uri: http://localhost:9002
+          predicates:
+            - Path=/api/flights/**
+        - id: bookings
+          uri: http://localhost:9003
+          predicates:
+            - Path=/api/bookings/**
+        - id: ancillaries
+          uri: http://localhost:9004
+          predicates:
+            - Path=/api/ancillaries/**
+        - id: transport
+          uri: http://localhost:9005
+          predicates:
+            - Path=/api/transport-options/**

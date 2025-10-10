@@ -28,18 +28,23 @@ public class FlightController {
     public ResponseEntity<List<FlightDto>> search(
             @RequestParam String from,
             @RequestParam String to,
-            @RequestParam(required = false) String date
+            @RequestParam(name = "date", required = false) String date,
+            @RequestParam(name = "flightdate", required = false) String flightdate
     ) {
-        List<FlightDto> flights = flightService.search(from, to, date);
+        String effectiveDate = (date != null && !date.isBlank()) ? date : flightdate;
+        List<FlightDto> flights = flightService.search(from, to, effectiveDate);
         return ResponseEntity.ok(flights);
     }
 
     @GetMapping
     public ResponseEntity<List<FlightDto>> searchByCity(
             @RequestParam(name = "sourceCity") String sourceCity,
-            @RequestParam(name = "destinationCity") String destinationCity
+            @RequestParam(name = "destinationCity") String destinationCity,
+            @RequestParam(name = "date", required = false) String date,
+            @RequestParam(name = "flightdate", required = false) String flightdate
     ) {
-        List<FlightDto> flights = flightService.search(sourceCity, destinationCity, null);
+        String effectiveDate = (date != null && !date.isBlank()) ? date : flightdate;
+        List<FlightDto> flights = flightService.search(sourceCity, destinationCity, effectiveDate);
         return ResponseEntity.ok(flights);
     }
 }

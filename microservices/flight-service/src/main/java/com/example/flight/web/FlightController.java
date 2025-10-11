@@ -20,7 +20,7 @@ public class FlightController {
                                              @RequestParam(name = "date", required = false) String date,
                                              @RequestParam(name = "flightdate", required = false) String flightdate) {
     String effectiveDate = (date != null && !date.isBlank()) ? date : flightdate;
-    return ResponseEntity.ok(repo.search(from, to, effectiveDate));
+    return ResponseEntity.ok(repo.searchWithCityFallback(from, to, effectiveDate));
   }
 
   @GetMapping
@@ -29,7 +29,7 @@ public class FlightController {
                                                    @RequestParam(name = "date", required = false) String date,
                                                    @RequestParam(name = "flightdate", required = false) String flightdate) {
     String effectiveDate = (date != null && !date.isBlank()) ? date : flightdate;
-    return ResponseEntity.ok(repo.search(sourceCity, destinationCity, effectiveDate));
+    return ResponseEntity.ok(repo.searchWithCityFallback(sourceCity, destinationCity, effectiveDate));
   }
 
   @PostMapping

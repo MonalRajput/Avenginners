@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from 'src/app/Services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -13,7 +12,7 @@ export class RegisterComponent {
   submitted = false;
   successMessage = '';
 
-  constructor(private fb: FormBuilder, private router: Router, private auth: AuthService) {
+  constructor(private fb: FormBuilder, private router: Router) {
     this.registerForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -29,19 +28,9 @@ export class RegisterComponent {
   onSubmit() {
     this.submitted = true;
     if (this.registerForm.valid) {
-      const { email, password } = this.registerForm.value;
-      this.auth.register(email, password).subscribe((ok) => {
-        if (ok) {
-          // Auto-login after register
-          this.auth.apiLogin(email, password).subscribe((logged) => {
-            if (logged) {
-              this.router.navigate(['/']);
-            } else {
-              this.router.navigate(['/login']);
-            }
-          });
-        }
-      });
+      // Mock registration success
+      this.successMessage = 'Registration successful! Redirecting to login...';
+      setTimeout(() => this.router.navigate(['/login']), 2000);
     }
   }
 }

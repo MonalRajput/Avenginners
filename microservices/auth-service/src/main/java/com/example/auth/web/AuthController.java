@@ -2,18 +2,12 @@ package com.example.auth.web;
 
 import com.example.auth.domain.UserAccount;
 import com.example.auth.repo.UserAccountRepository;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.charset.StandardCharsets;
-import java.security.Key;
-import java.time.Instant;
-import java.util.Date;
 import java.util.Map;
 
 @RestController
@@ -23,8 +17,6 @@ public class AuthController {
 
   private final UserAccountRepository users;
   private final PasswordEncoder encoder = new BCryptPasswordEncoder();
-  private static final String SECRET = "changeit-changeit-changeit-changeit-32b-secret";
-  private static final Key KEY = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
 
   public AuthController(UserAccountRepository users) {
     this.users = users;
@@ -55,14 +47,11 @@ public class AuthController {
     if (user == null || !encoder.matches(password, user.getPasswordHash())) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "invalid credentials"));
     }
-    Instant now = Instant.now();
-    String jwt = Jwts.builder()
-        .subject(username)
-        .claim("uid", user.getId())
-        .issuedAt(Date.from(now))
-        .expiration(Date.from(now.plusSeconds(3600)))
-        .signWith(KEY)
-        .compact();
-    return ResponseEntity.ok(Map.of("token", jwt));
+    // No token; return light session info for frontend storage if needed
+    return ResponseEntity.ok(Map.of(
+        "userId", user.getId(),
+        "username", user.getUsername(),
+        "role", user.getRole()
+    ));
   }
 }

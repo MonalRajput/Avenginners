@@ -1,8 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HTTP_INTERCEPTORS, HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
-import { Injectable as NgInjectable } from '@angular/core';
-import { AuthService } from './auth.service';
-import { Observable as RxObservable } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';  // Use map for transformation
 import { Ancillary, Flight } from 'src/app/Models/booking.model';  // Adjust path
@@ -188,15 +185,4 @@ export class ApiService {
   }
 }
 
-@NgInjectable()
-export class JwtInterceptor implements HttpInterceptor {
-  constructor(private auth: AuthService) {}
-  intercept(req: HttpRequest<any>, next: HttpHandler): RxObservable<HttpEvent<any>> {
-    const token = this.auth.getToken();
-    if (token) {
-      const cloned = req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
-      return next.handle(cloned);
-    }
-    return next.handle(req);
-  }
-}
+// JWT interceptor removed (no token flow)

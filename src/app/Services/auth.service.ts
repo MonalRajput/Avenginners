@@ -80,15 +80,15 @@ export class AuthService {
     return false;
   }
 
-  // Real API login via gateway -> /auth/login
+  // Real API login via gateway -> /auth/login (no JWT; store session info)
   apiLogin(email: string, password: string): Observable<boolean> {
     const body = { username: email, password };
-    return this.http.post<{ token: string }>(`${this.gatewayBase}/auth/login`, body).pipe(
+    return this.http.post<any>(`${this.gatewayBase}/auth/login`, body).pipe(
       map(res => {
-        const token = res?.token;
-        if (!token) return false;
-        const user = { name: email.split('@')[0] || 'User', email };
-        this.setAuth(token, user);
+        if (!res || res.error) return false;
+        const user = { name: email.split('@')[0] || 'User', email, userId: res.userId };
+        // Store a lightweight session token substitute
+        this.setAuth('session', user);
         return true;
       }),
       catchError(() => of(false))

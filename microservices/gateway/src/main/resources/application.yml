@@ -15,23 +15,23 @@ spring:
             allowCredentials: true
       routes:
         - id: auth
-          uri: http://localhost:9001
+          uri: lb://auth-service
           predicates:
             - Path=/auth/**
         - id: flights
-          uri: http://localhost:9002
+          uri: lb://flight-service
           predicates:
             - Path=/api/flights/**
         - id: bookings
-          uri: http://localhost:9003
+          uri: lb://booking-service
           predicates:
             - Path=/api/bookings/**
         - id: ancillaries
-          uri: http://localhost:9004
+          uri: lb://ancillary-service
           predicates:
             - Path=/api/ancillaries/**
         - id: transport
-          uri: http://localhost:9005
+          uri: lb://transport-service
           predicates:
             - Path=/api/transport-options/**
   application:

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { BookingRequest } from '../Models/booking.model';
+import { AuthService } from './auth.service';
 import { ApiService } from './api.service';
 // import { BookingRequest } from '../Models/booking-request.model';
 // import { ApiService } from './api.service';
@@ -29,7 +30,7 @@ export class BookingService {
   private bookingData = new BehaviorSubject<BookingRequest>({} as BookingRequest);
   currentBooking$ = this.bookingData.asObservable();
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService, private auth: AuthService) {}
 
   updateBooking(data: Partial<BookingRequest>) {
     const current = this.bookingData.value;
@@ -53,8 +54,9 @@ export class BookingService {
     return total;
   }
 
-  confirmBooking(userId: number = 1): Observable<any> {  // Mock user ID fallback
-    const data = { ...this.getCurrentBooking(), userId };
+  confirmBooking(userId?: number): Observable<any> {  // Use logged-in user ID if available
+    const uid = userId ?? this.auth.user?.userId ?? 1;
+    const data = { ...this.getCurrentBooking(), userId: uid } as any;
     return this.api.createBooking(data);
   }
 

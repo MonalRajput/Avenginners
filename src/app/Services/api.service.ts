@@ -5,6 +5,7 @@ import { catchError, map } from 'rxjs/operators';  // Use map for transformation
 import { Ancillary, Flight } from 'src/app/Models/booking.model';  // Adjust path
 import { SeatType as Seat } from 'src/app/Models/booking.model';  // Alias for SeatType
 import { TransportMode } from 'src/app/Models/booking.model';
+import { Booking } from 'src/app/Models/booking.model';
 
 @Injectable({
   providedIn: 'root'
@@ -174,6 +175,12 @@ export class ApiService {
   createBooking(bookingData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/bookings`, bookingData).pipe(
       catchError(this.handleError('createBooking'))
+    );
+  }
+
+  getBookings(userId: number): Observable<Booking[]> {
+    return this.http.get<Booking[]>(`${this.apiUrl}/bookings`, { params: { userId } }).pipe(
+      catchError(this.handleError('getBookings', []))
     );
   }
 

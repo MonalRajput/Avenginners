@@ -18,7 +18,7 @@ import { StepperComponent } from './Components/stepper/stepper.component';
 import { ConfirmationComponent } from './pages/confirmation/confirmation.component';
 import { ReceiptDialogComponent } from './Components/receipt-dialog/receipt-dialog.component';
 import { NavbarComponent } from './Components/navbar/navbar.component';
-// import { HistoryComponent } from './Components/history/history.component';
+import { HistoryComponent } from './Components/history/history.component';
 
 const routes: Routes = [
   // Home (Default)
@@ -42,7 +42,7 @@ const routes: Routes = [
   { path: 'ancillaries', component: AncillariesComponent },
   { path: 'confirmation', component: ConfirmationComponent },
   {path: 'receipt-dialog', component: ReceiptDialogComponent},
-  // { path: 'history', component: HistoryComponent },
+  { path: 'history', component: HistoryComponent },
   
   // Wildcard (404 Redirect)
   { path: '**', redirectTo: '' }

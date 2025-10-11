@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { Booking } from '../../Models/booking.model';  // From earlier
+import { Component, OnInit } from '@angular/core';
+import { ApiService } from 'src/app/Services/api.service';
+import { AuthService } from 'src/app/Services/auth.service';
 
 @Component({
   selector: 'app-history',
@@ -22,6 +25,12 @@ import { Booking } from '../../Models/booking.model';  // From earlier
     mat-list-item { margin-bottom: 10px; }
   `]
 })
-export class HistoryComponent {
- 
+export class HistoryComponent implements OnInit {
+  pastBookings: Booking[] = [];
+  constructor(private api: ApiService, private auth: AuthService) {}
+  ngOnInit(): void {
+    const uid = this.auth.user?.userId;
+    if (!uid) return;
+    this.api.getBookings(uid).subscribe((list) => this.pastBookings = list || []);
+  }
 }
